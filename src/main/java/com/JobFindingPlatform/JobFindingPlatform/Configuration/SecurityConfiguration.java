@@ -21,13 +21,17 @@ public class SecurityConfiguration {
 
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                                 // Upload File
+                                .requestMatchers(HttpMethod.POST,"/Api/Upload/**").permitAll()
+                                 //Email
+                                .requestMatchers(HttpMethod.POST,"/Api/Email/**").permitAll()
 //                               // Login and Regiteration
                                 .requestMatchers(HttpMethod.POST, "/User/login", "/User/register").permitAll()
-                                .requestMatchers("Api/JobPost", "Api/JobPost/**").permitAll()
+                                .requestMatchers("/Api/JobPost", "/Api/JobPost/**").permitAll()
                                 // Role Based access
-                                .requestMatchers("Api/Recruiter/**").hasRole("RECRUITER")
-                                .requestMatchers("Api/JobSeeker/**").hasRole("JOBSEEKER")
-                                .requestMatchers("Api/Admin/**").hasRole("ADMIN")
+                                .requestMatchers("/Api/Recruiter/**").hasRole("RECRUITER")
+                                .requestMatchers("/Api/JobSeeker/**").hasRole("JOBSEEKER")
+                                .requestMatchers("/Api/Admin/**").hasRole("ADMIN")
                                 .requestMatchers("/api/applications/apply/**").hasRole("JOBSEEKER")
                                 .requestMatchers("/api/applications/status/**").hasRole("RECRUITER")
                                 .anyRequest().authenticated()
