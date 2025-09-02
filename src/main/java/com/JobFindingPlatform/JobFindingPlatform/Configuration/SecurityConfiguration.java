@@ -27,6 +27,13 @@ public class SecurityConfiguration {
                                 .requestMatchers(HttpMethod.POST,"/Api/Email/**").permitAll()
 //                               // Login and Regiteration
                                 .requestMatchers(HttpMethod.POST, "/User/login", "/User/register").permitAll()
+                                // For Payment Module
+                                .requestMatchers(HttpMethod.POST,"/Api/Payment/process").permitAll()
+                                .requestMatchers(HttpMethod.GET,"/Api/Payment/**").permitAll()
+                                 // For subscribe plan
+                                .requestMatchers(HttpMethod.POST,"/Api/SubscriptionPlan/**").permitAll()
+                                .requestMatchers(HttpMethod.GET,"/Api/SubscriptionPlan/GetAllPlan","/Api/SubscriptionPlan/**").permitAll()
+                                .requestMatchers(HttpMethod.DELETE,"/Api/SubscriptionPlan/**").permitAll()
                                 .requestMatchers("/Api/JobPost", "/Api/JobPost/**").permitAll()
                                 // Role Based access
                                 .requestMatchers("/Api/Recruiter/**").hasRole("RECRUITER")

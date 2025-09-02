@@ -22,6 +22,7 @@ public class Payment {
     private Long userId;
     private Long planId;
     private Double amount;
+    @Enumerated(EnumType.STRING)
     private PaymentStatus paymentStatus;
     private String transactionId;
     private LocalDateTime localDateTime;

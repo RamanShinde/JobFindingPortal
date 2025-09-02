@@ -21,7 +21,7 @@ public class PaymentService {
         Payment pay= new Payment();
         pay.setUserId(dto.getUserId());
         pay.setPlanId(dto.getPlanId());
-        pay.setAmount(dto.getAmout());
+        pay.setAmount(dto.getAmount());
         pay.setPaymentStatus(PaymentStatus.SUCCESS);
         pay.setTransactionId(UUID.randomUUID().toString());
         paymentRepository.save(pay);

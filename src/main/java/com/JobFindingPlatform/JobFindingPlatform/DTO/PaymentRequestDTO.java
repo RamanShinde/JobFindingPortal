@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class PaymentRequestDTO {
     private Long userId;
     private Long planId;
-    private Double amout;
+    private Double amount;
 
 
 }
