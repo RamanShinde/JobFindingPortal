@@ -23,7 +23,7 @@ public class JWTUtil {
                 .claim("role", user.getRole().toString())
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + expireTime))
-                .signWith(key) // using key generated from secret
+                .signWith(key)
                 .compact();
     }
 

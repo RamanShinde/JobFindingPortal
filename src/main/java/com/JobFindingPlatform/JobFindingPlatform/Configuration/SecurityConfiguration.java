@@ -9,41 +9,45 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.server.SecurityWebFilterChain;
 
 @Configuration
 public class SecurityConfiguration {
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-
+    public SecurityWebFilterChain securityFilterChain(ServerHttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                                 // Upload File
-                                .requestMatchers(HttpMethod.POST,"/Api/Upload/**").permitAll()
-                                 //Email
-                                .requestMatchers(HttpMethod.POST,"/Api/Email/**").permitAll()
-//                               // Login and Regiteration
-                                .requestMatchers(HttpMethod.POST, "/User/login", "/User/register").permitAll()
-                                // For Payment Module
-                                .requestMatchers(HttpMethod.POST,"/Api/Payment/process").permitAll()
-                                .requestMatchers(HttpMethod.GET,"/Api/Payment/**").permitAll()
-                                 // For subscribe plan
-                                .requestMatchers(HttpMethod.POST,"/Api/SubscriptionPlan/**").permitAll()
-                                .requestMatchers(HttpMethod.GET,"/Api/SubscriptionPlan/GetAllPlan","/Api/SubscriptionPlan/**").permitAll()
-                                .requestMatchers(HttpMethod.DELETE,"/Api/SubscriptionPlan/**").permitAll()
-                                .requestMatchers("/Api/JobPost", "/Api/JobPost/**").permitAll()
-                                // Role Based access
-                                .requestMatchers("/Api/Recruiter/**").hasRole("RECRUITER")
-                                .requestMatchers("/Api/JobSeeker/**").hasRole("JOBSEEKER")
-                                .requestMatchers("/Api/Admin/**").hasRole("ADMIN")
-                                .requestMatchers("/api/applications/apply/**").hasRole("JOBSEEKER")
-                                .requestMatchers("/api/applications/status/**").hasRole("RECRUITER")
-                                .anyRequest().authenticated()
-                ).sessionManagement((sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)))
-                .httpBasic(Customizer.withDefaults());
+                .authorizeExchange(auth -> auth
+                        // Upload File
+                        .pathMatchers(HttpMethod.POST, "/Api/Upload/**").permitAll()
+                        // Email
+                        .pathMatchers(HttpMethod.POST, "/Api/Email/**").permitAll()
+                        // Login and Registration
+                        .pathMatchers(HttpMethod.POST, "/User/login", "/User/register").permitAll()
+                        // Payment Module
+                        .pathMatchers(HttpMethod.POST, "/Api/Payment/process").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/Api/Payment/**").permitAll()
+                        // Subscription Plan
+                        .pathMatchers(HttpMethod.POST, "/Api/SubscriptionPlan/**").permitAll()
+                        .pathMatchers(HttpMethod.GET, "/Api/SubscriptionPlan/GetAllPlan", "/Api/SubscriptionPlan/**").permitAll()
+                        .pathMatchers(HttpMethod.DELETE, "/Api/SubscriptionPlan/**").permitAll()
+                        // JobPost
+                        .pathMatchers("/Api/JobPost", "/Api/JobPost/**").permitAll()
+                        // Role based
+                        .pathMatchers("/Api/Recruiter/**").hasRole("RECRUITER")
+                        .pathMatchers("/Api/JobSeeker/**").hasRole("JOBSEEKER")
+                        .pathMatchers("/Api/Admin/**").hasRole("ADMIN")
+                        .pathMatchers("/api/applications/apply/**").hasRole("JOBSEEKER")
+                        .pathMatchers("/api/applications/status/**").hasRole("RECRUITER")
+                        .anyExchange().authenticated()
+                )
+                .httpBasic(httpBasicSpec -> httpBasicSpec.disable()) // Disable basic auth
+                .formLogin(form -> form.disable());                  // Disable form login
+
         return http.build();
     }
 
@@ -56,15 +60,16 @@ public class SecurityConfiguration {
         return prov;
     }
 
-    @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration cfg) throws Exception {
-        return cfg.getAuthenticationManager();
-    }
+//    @Bean
+//    public AuthenticationManager authenticationManager(
+//            AuthenticationConfiguration cfg) throws Exception {
+//        return cfg.getAuthenticationManager();
+//    }
 
 
     @Bean
     public PasswordEncoder passwordEncoder() {
+
         return new BCryptPasswordEncoder();
     }
 }
